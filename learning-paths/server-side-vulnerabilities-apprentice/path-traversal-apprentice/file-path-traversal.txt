@@ -1,0 +1,52 @@
+### Path Traversal (Directory Traversal)
+
+#### Overview
+
+Path traversal vulnerabilities allow an attacker to access files and directories that are outside the intended directory. This can lead to exposure of sensitive files, credentials, source code, and in some cases, full system compromise.
+
+#### What can be accessed
+
+* Application code and configuration
+* Credentials for back-end systems
+* Sensitive operating system files (e.g., `/etc/passwd`, `win.ini`)
+* Arbitrary file write in some advanced cases
+
+#### How the vulnerability works
+
+When user input is concatenated directly into file paths without proper validation or sanitization, an attacker can manipulate the path using traversal sequences like `../` or `..\`.
+
+Example vulnerable image loading endpoint:
+
+```html
+<img src="/loadImage?filename=218.png">
+```
+
+Server behavior:
+
+```
+/var/www/images/218.png
+```
+
+If unsanitized, the attacker can request:
+
+```
+/loadImage?filename=../../../etc/passwd
+```
+
+This resolves to:
+
+```
+/etc/passwd
+```
+
+#### Common payloads
+
+* Unix: `../../../etc/passwd`
+* Windows: `..\..\..\windows\win.ini`
+
+#### Real-world usage
+
+* Bypass access controls
+* Leak sensitive credentials
+* Explore server internals for further exploitation
+
